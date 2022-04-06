@@ -150,6 +150,8 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.blur();
 
     updateUI(currentAccount);
+  } else {
+    alert('INCORRECT LOGIN');
   }
 });
 
@@ -174,6 +176,41 @@ btnTransfer.addEventListener('click', function (e) {
   } else {
     alert(`TRANSFERENCIA INVALIDA`);
   }
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    //Search index
+    const idx = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    console.log(idx);
+
+    //Delete Account
+    accounts.splice(idx, 1);
+
+    //Hide UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  console.log(amount);
+  if (amount > 0 && currentAccount.movements.some(mov => amount * 0.1)) {
+    currentAccount.movements.push(amount);
+
+    //Update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
 });
 
 /////////////////////////////////////////////////
