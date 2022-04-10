@@ -14,11 +14,11 @@ const account1 = {
     '2019-11-18T21:31:17.178Z',
     '2019-12-23T07:42:02.383Z',
     '2020-01-28T09:15:04.904Z',
-    '2020-04-01T10:17:24.185Z',
-    '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2022-04-09T10:17:24.185Z',
+    '2022-04-10T14:11:59.604Z',
+    '2022-04-09T17:01:17.194Z',
+    '2022-04-05T23:36:17.929Z',
+    '2022-04-10T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-BR',
@@ -108,6 +108,25 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+const formatMovementsDate = function (currentDate) {
+  const calcDates = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDates(new Date(), currentDate);
+  console.log(daysPassed);
+
+  if (daysPassed === 0) return 'Today';
+  else if (daysPassed === 1) return 'Yesterday';
+  else if (daysPassed <= 7) return `${daysPassed} days ago`;
+
+  const day = `${currentDate.getDate()}`.padStart(2, 0);
+  const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
+  const year = currentDate.getFullYear();
+  const hour = `${currentDate.getHours()}`.padStart(2, 0);
+  const min = `${currentDate.getMinutes()}`.padStart(2, 0);
+  return `${day}/${month}/${year}, ${hour}:${min}`;
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -119,12 +138,7 @@ const displayMovements = function (acc, sort = false) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const currentDate = new Date(acc.movementsDates[i]);
-    const day = `${currentDate.getDate()}`.padStart(2, 0);
-    const month = `${currentDate.getMonth() + 1}`.padStart(2, 0);
-    const year = currentDate.getFullYear();
-    const hour = `${currentDate.getHours()}`.padStart(2, 0);
-    const min = `${currentDate.getMinutes()}`.padStart(2, 0);
-    const displayDate = `${day}/${month}/${year}, ${hour}:${min}`;
+    const displayDate = formatMovementsDate(currentDate);
 
     const html = `    
       <div class="movements__row">
