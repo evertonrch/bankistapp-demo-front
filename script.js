@@ -220,11 +220,12 @@ const updateUI = function (acc) {
 };
 
 //Event Handler
-let currentAccount;
+let currentAccount, timer;
 
 //Pretend to be logged in
-currentAccount = account1;
-updateUI(currentAccount);
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 // const options = {
 //   hour: 'numeric',
@@ -241,7 +242,31 @@ updateUI(currentAccount);
 //   new Date()
 // );
 
-containerApp.style.opacity = 100;
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    //Timer equals 0
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+
+    //Decrease timer
+    time--;
+  };
+  //Seconds
+  let time = 120;
+
+  //Call every 1 second
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
 
 btnLogin.addEventListener('click', function (e) {
   //Do not submit the form
@@ -286,6 +311,10 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
+    //Turn on timer
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
+
     updateUI(currentAccount);
   } else {
     alert('INCORRECT LOGIN');
@@ -315,6 +344,10 @@ btnTransfer.addEventListener('click', function (e) {
     receivesAcc.movementsDates.push(new Date().toISOString());
 
     updateUI(currentAccount);
+
+    //Reset timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   } else {
     alert(`TRANSFERENCIA INVALIDA`);
   }
@@ -355,6 +388,10 @@ btnLoan.addEventListener('click', function (e) {
 
       //Update UI
       updateUI(currentAccount);
+
+      //Reset timer
+      clearInterval(timer);
+      timer = startLogOutTimer();
     }, 5000);
   }
   inputLoanAmount.value = '';
